@@ -1,5 +1,7 @@
 package edu.smith.cs.csc212.calc;
 
+import java.util.Collections;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,8 +43,30 @@ public class ExprParserTest {
 	}
 	
 	@Test
+	public void parenPrecedence() {
+		Assert.assertEquals(9, ExprParser.parse("(1+2)*3").evaluate());
+		Assert.assertEquals(-3, ExprParser.parse("(1-2)*3").evaluate());
+		Assert.assertEquals(1, ExprParser.parse("(1+2)/3").evaluate());
+		Assert.assertEquals(0, ExprParser.parse("(1-2)/3").evaluate());
+	}
+	
+	@Test
 	public void longExpr() {
 		Assert.assertEquals(55, ExprParser.parse("1+2+3+4+5+6+7+8+9+10").evaluate());
 		Assert.assertEquals(120, ExprParser.parse("1*2*3*4*5").evaluate());
 	}
+	
+	@Test(expected=Variable.BadNameError.class)
+	public void missingVariable() {
+		Expr missing = ExprParser.parse("1+missing");
+		missing.evaluate();
+	}
+	
+	@Test
+	public void regularVariable() {
+		Expr missing = ExprParser.parse("1+x");
+		Assert.assertEquals(4, missing.evaluate(Collections.singletonMap("x", 3)));
+		Assert.assertEquals(-2, missing.evaluate(Collections.singletonMap("x", -3)));
+	}
+
 }

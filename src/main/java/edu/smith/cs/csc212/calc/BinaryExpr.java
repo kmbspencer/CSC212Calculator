@@ -1,6 +1,8 @@
 package edu.smith.cs.csc212.calc;
 
-class BinaryExpr implements Expr {
+import java.util.Map;
+
+public class BinaryExpr implements Expr {
 	private String op;
 	Expr left;
 	Expr right;
@@ -13,20 +15,22 @@ class BinaryExpr implements Expr {
 		this.left = left;
 		this.right = right;
 	}
-	public int evaluate() {
+	@Override
+	public int evaluate(Map<String, Integer> vars) {
 		switch(op) {
 			case "+":
-				return left.evaluate() + right.evaluate();
+				return left.evaluate(vars) + right.evaluate(vars);
 			case "-":
-				return left.evaluate() - right.evaluate();
+				return left.evaluate(vars) - right.evaluate(vars);
 			case "*":
-				return left.evaluate() * right.evaluate();
+				return left.evaluate(vars) * right.evaluate(vars);
 			case "/":
-				return left.evaluate() / right.evaluate();
+				return left.evaluate(vars) / right.evaluate(vars);
 			default:
 				throw new UnsupportedOperationException(op);
 		}
 	}
+	@Override
 	public String toString() {
 		return "("+op+" "+left+" "+right+")";
 	}

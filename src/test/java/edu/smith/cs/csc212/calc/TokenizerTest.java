@@ -14,6 +14,7 @@ public class TokenizerTest {
 		Assert.assertEquals(Arrays.asList("(", "1", "+", "2", "-", "3", "*", "4", "/", "5", ")"),
 				Tokenizer.tokenize(input));
 	}
+	
 	@Test
 	public void testTokenizerWS() {
 		String input = " ( 1 + 2 - 3 * 4 / 5 ) ";
@@ -37,5 +38,18 @@ public class TokenizerTest {
 	public void testTokenizerError() {
 		String input = " 1 !";
 		Tokenizer.tokenize(input);
+	}
+	
+	@Test
+	public void testVars() {
+		String input = "(a+b-c*d/e)";
+		Assert.assertEquals(Arrays.asList("(", "a", "+", "b", "-", "c", "*", "d", "/", "e", ")"),
+				Tokenizer.tokenize(input));
+	}
+	@Test
+	public void testVarsWS() {
+		String input = "( a +b -c * d / e)";
+		Assert.assertEquals(Arrays.asList("(", "a", "+", "b", "-", "c", "*", "d", "/", "e", ")"),
+				Tokenizer.tokenize(input));
 	}
 }

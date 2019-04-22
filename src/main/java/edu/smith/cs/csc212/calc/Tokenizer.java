@@ -69,23 +69,24 @@ public class Tokenizer {
 		if (next == -1) {
 			return null;
 		}
-		char n = (char) next;
-		if (n == '+' || n == '-' || n == '/' || n == '*' || n == '(' || n == ')') {
+		char ch = (char) next;
+		if (ch == '+' || ch == '-' || ch == '/' || ch == '*' || ch == '(' || ch == ')') {
 			return consume(1);
 		}
-		// Assume it's part of a number:
-		StringBuilder num = new StringBuilder();
-		while (Character.isDigit(n)) {
-			num.append(n);
+		
+		// Assume it's part of a number or variable:
+		StringBuilder id = new StringBuilder();
+		while (Character.isLetterOrDigit(ch)) {
+			id.append(ch);
 			position++;
 			next = peek();
 			if (next == -1) {
 				break;
 			}
-			n = (char) next;
+			ch = (char) next;
 		}
-		if (num.length() > 0) {
-			return num.toString();
+		if (id.length() > 0) {
+			return id.toString();
 		}
 		throw error("Unknown token.");
 	}

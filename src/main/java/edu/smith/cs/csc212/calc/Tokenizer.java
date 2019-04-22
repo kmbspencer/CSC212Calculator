@@ -21,11 +21,6 @@ public class Tokenizer {
 		}
 		return -1;
 	}
-	public int getc() {
-		int x = peek();
-		position++;
-		return x;
-	}
 	
 	public int remaining() {
 		return data.length - position;

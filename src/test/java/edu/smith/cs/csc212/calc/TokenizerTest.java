@@ -1,0 +1,41 @@
+package edu.smith.cs.csc212.calc;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class TokenizerTest {
+
+	@Test
+	public void testTokenizer() {
+		String input = "(1+2-3*4/5)";
+		Assert.assertEquals(Arrays.asList("(", "1", "+", "2", "-", "3", "*", "4", "/", "5", ")"),
+				Tokenizer.tokenize(input));
+	}
+	@Test
+	public void testTokenizerWS() {
+		String input = " ( 1 + 2 - 3 * 4 / 5 ) ";
+		Assert.assertEquals(Arrays.asList("(", "1", "+", "2", "-", "3", "*", "4", "/", "5", ")"),
+				Tokenizer.tokenize(input));
+	}
+	
+	@Test
+	public void testTokenizerNothing() {
+		String input = "  ";
+		Assert.assertEquals(Collections.emptyList(), Tokenizer.tokenize(input));
+	}
+	
+	@Test
+	public void testTokenizerJustNumber() {
+		String input = "1234";
+		Assert.assertEquals(Arrays.asList("1234"), Tokenizer.tokenize(input));
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void testTokenizerError() {
+		String input = " 1 !";
+		Tokenizer.tokenize(input);
+	}
+}

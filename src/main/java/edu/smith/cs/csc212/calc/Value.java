@@ -7,20 +7,27 @@ import java.util.Map;
  * @author jfoley
  *
  */
-public class Value implements Expr {
+public class Value implements Expr{
 	/**
 	 * What number is it?
 	 */
-	private int num;
+	private boolean num;
 	/**
 	 * Must give a number to construct this.
 	 * @param n
 	 */
-	public Value(int n) {
-		this.num = n;
+	public Value(String n) {
+		if(n.contentEquals("t")){
+			this.num = true;
+		} else if(n.contentEquals("f")){
+			this.num = false;
+		} else {
+			throw new RuntimeException(n+" can't be a Value!");
+		}
+				
 	}
-	@Override
-	public int evaluate(Map<String, Integer> vars) {
+	
+	public boolean evaluate(Map<String, Boolean> vars) {
 		return num;
 	}
 	@Override

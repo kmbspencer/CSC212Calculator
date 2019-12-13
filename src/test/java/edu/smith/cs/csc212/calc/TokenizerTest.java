@@ -10,15 +10,15 @@ public class TokenizerTest {
 
 	@Test
 	public void testTokenizer() {
-		String input = "(1+2-3*4/5)";
-		Assert.assertEquals(Arrays.asList("(", "1", "+", "2", "-", "3", "*", "4", "/", "5", ")"),
+		String input = "(t|f&t|f)";
+		Assert.assertEquals(Arrays.asList("(", "t", "|", "f", "&", "t", "|", "f", ")"),
 				Tokenizer.tokenize(input));
 	}
 	
 	@Test
 	public void testTokenizerWS() {
-		String input = " ( 1 + 2 - 3 * 4 / 5 ) ";
-		Assert.assertEquals(Arrays.asList("(", "1", "+", "2", "-", "3", "*", "4", "/", "5", ")"),
+		String input = " ( t | f &  t | f )  ";
+		Assert.assertEquals(Arrays.asList("(", "t", "|", "f", "&", "t", "|", "f", ")"),
 				Tokenizer.tokenize(input));
 	}
 	
@@ -28,28 +28,31 @@ public class TokenizerTest {
 		Assert.assertEquals(Collections.emptyList(), Tokenizer.tokenize(input));
 	}
 	
-	@Test
+	/**@Test
 	public void testTokenizerJustNumber() {
 		String input = "1234";
 		Assert.assertEquals(Arrays.asList("1234"), Tokenizer.tokenize(input));
 	}
+	**/
 	
 	@Test(expected=RuntimeException.class)
 	public void testTokenizerError() {
-		String input = " 1 !";
+		String input = " 1 *";
 		Tokenizer.tokenize(input);
 	}
 	
 	@Test
 	public void testVars() {
-		String input = "(a+b-c*d/e)";
-		Assert.assertEquals(Arrays.asList("(", "a", "+", "b", "-", "c", "*", "d", "/", "e", ")"),
+		String input = "(a|b|c&d&e)";
+		Assert.assertEquals(Arrays.asList("(", "a", "|", "b", "|", "c", "&", "d", "&", "e", ")"),
 				Tokenizer.tokenize(input));
 	}
+	
 	@Test
 	public void testVarsWS() {
-		String input = "( a +b -c * d / e)";
-		Assert.assertEquals(Arrays.asList("(", "a", "+", "b", "-", "c", "*", "d", "/", "e", ")"),
+		String input = "( a |b |c & d & e)";
+		Assert.assertEquals(Arrays.asList("(", "a", "|", "b", "|", "c", "&", "d", "&", "e", ")"),
 				Tokenizer.tokenize(input));
 	}
+	
 }

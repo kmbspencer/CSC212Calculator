@@ -10,18 +10,28 @@ public class Tokenizer {
 	private char[] data;
 	int position;
 	
+	/**
+	 * takes input and adds to list
+	 * @param input
+	 */
 	public Tokenizer(String input) {
 		this.data = input.toCharArray();
 		this.position = 0;
 	}
-	
+	/**
+	 * 
+	 * @return next element
+	 */
 	private int peek() {
 		if (position < data.length) {
 			return data[position];
 		}
 		return -1;
 	}
-	
+	/**
+	 * 
+	 * @return how many mre item in list
+	 */
 	public int remaining() {
 		return data.length - position;
 	}
@@ -47,7 +57,9 @@ public class Tokenizer {
 		position += amt;
 		return out;
 	}
-	
+	/**
+	 * skips over white space
+	 */
 	public void skipWhitespace() {
 		while(true) {
 			int next = peek();
@@ -62,7 +74,10 @@ public class Tokenizer {
 			break;
 		}
 	}
-	
+	/**
+	 * finds the next character that isn't an opperator or t or f
+	 * @return 
+	 */
 	public String nextToken() {
 		skipWhitespace();
 		int next = peek();
@@ -70,7 +85,7 @@ public class Tokenizer {
 			return null;
 		}
 		char ch = (char) next;
-		if (ch == '+' || ch == '-' || ch == '/' || ch == '*' || ch == '(' || ch == ')') {
+		if (ch == 't' || ch == 'f' || ch == '&' || ch == '|' || ch == '!' || ch == '(' || ch == ')') {
 			return consume(1);
 		}
 		
@@ -80,7 +95,7 @@ public class Tokenizer {
 			id.append(ch);
 			position++;
 			next = peek();
-			if (next == -1) {
+			if (next == -1 || ch == 't' || ch == 'f' || ch == '&' || ch == '|' || ch == '!' || ch == '(' || ch == ')') {
 				break;
 			}
 			ch = (char) next;

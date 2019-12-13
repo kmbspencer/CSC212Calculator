@@ -3,6 +3,9 @@ package edu.smith.cs.csc212.calc;
 import java.util.Map;
 
 public class Variable implements Expr {
+	/**
+	 * allows tree to store a letter variable instead of a truth value. Not used in Main.
+	 */
 	private String name;
 
 	public Variable(String name) {
@@ -10,11 +13,8 @@ public class Variable implements Expr {
 	}
 
 	@Override
-	public int evaluate(Map<String, Integer> vars) {
-		Integer value = vars.get(name);
-		if (value == null) {
-			throw new BadNameError(name);
-		}
+	public boolean evaluate(Map<String, Boolean> vars) {
+		boolean value = vars.get(name);
 		return value;
 	}
 

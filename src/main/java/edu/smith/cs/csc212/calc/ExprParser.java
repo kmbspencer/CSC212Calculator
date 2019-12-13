@@ -33,20 +33,27 @@ public class ExprParser {
 			throw new RuntimeException("Expected: " + what);
 		}
 	}
-
+	/**
+	 * takes a value and returns if it is a boolean
+	 * @param value - single charecter in a string to be analyzed
+	 * @return boolean true if is a t or f
+	 */
+	public boolean torf(String value) {
+		if(value.equals("t")|| value.equals("f")) {
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * It's either a number or a variable. If it starts with a number, try it as a
 	 * number.
 	 * 
 	 * @return Value or Variable.
+	 * 
 	 */
-	public Expr readNumber() {
+	public Value readNumber() {
 		String value = tokens.get(position++);
-		if (Character.isDigit(value.charAt(0))) {
-			return new Value(Integer.parseInt(value));
-		} else {
-			return new Variable(value);
-		}
+		return new Value(value);
 	}
 
 	/**
@@ -62,19 +69,19 @@ public class ExprParser {
 	}
 
 	/**
-	 * Multiplication and division should be considered highest precedence. Except
+	 * And should be considered highest precedence. Except
 	 * for parentheses. Every time we want to "recurse" here, we call the one that
 	 * knows about parentheses: readExpr.
 	 * 
-	 * @return a tree of all the multiplication/division expressions we can find.
+	 * @return a tree of all the and expressions we can find.
 	 */
-	public Expr readMulDivExpr() {
+	public Expr readAnd() {
 		Expr left = readExpr();
 
 		while (position < tokens.size()) {
 			String tok = peek();
 
-			if (tok.equals("*") || tok.equals("/")) {
+			if (tok.equals("&")) {
 				position++;
 				Expr right = readExpr();
 				left = new BinaryExpr(tok, left, right);
@@ -86,21 +93,23 @@ public class ExprParser {
 	}
 
 	/**
-	 * Addition and subtraction should be considered lowest precedence. Every time
-	 * we want to "recurse" here, we actually call "readMulDivExpr" to give
-	 * multiplication higher precedence.
+	 * Or should be considered lowest precedence. Every time
+	 * we want to "recurse" here, we actually call "readAnd" to give
+	 * and higher precedence.
 	 * 
-	 * @return a tree of all the multiplication/division expressions we can find.
+	 * @return a tree of all the and expressions we can find.
 	 */
-	public Expr readAddSubExpr() {
-		Expr left = readMulDivExpr();
+	public Expr readOr() {
+	 
+	
+		Expr left = readAnd();
 
 		while (position < tokens.size()) {
 			String tok = peek();
 
-			if (tok.equals("+") || tok.equals("-")) {
+			if (tok.equals("|")) {
 				position++;
-				Expr right = readMulDivExpr();
+				Expr right = readAnd();
 				left = new BinaryExpr(tok, left, right);
 			} else {
 				break;
@@ -108,21 +117,20 @@ public class ExprParser {
 		}
 		return left;
 	}
+	
 
 	/**
 	 * This rule reads parentheses, or negatives in front, or a number/value.
 	 * 
 	 * The BNF for this looks like:
 	 * <pre>
-	 * expr := '(' + addSubExpr + ')' 
-	 *       | '-' expr 
+	 * expr := '(' + orExpr + ')' 
+	 *       | '!' expr 
 	 *       | number 
 	 *       | variable
-	 * addSubExpr := mulDivExpr '+' mulDivExpr
-	 *             | mulDivExpr '-' mulDivExpr
-	 *             | mulDivExpr
-	 * mulDivExpr := expr '*' expr
-	 *             | expr '/' expr
+	 * orExpr := andExpr '|' andExpr
+	 *             | andExpr
+	 * andExpr := expr '&' expr
 	 *             | expr
 	 * </pre>
 	 * 
@@ -135,12 +143,12 @@ public class ExprParser {
 		String tok = tokens.get(position);
 		if (tok.equals("(")) {
 			expectExact("(");
-			Expr e = readAddSubExpr();
+			Expr e = readOr();
 			expectExact(")");
 			return e;
-		} else if (tok.equals("-")) {
-			expectExact("-");
-			return new BinaryExpr("-", new Value(0), readExpr());
+		} else if (tok.equals("!")) {
+			expectExact("!");
+			return new NotExpr(readExpr());
 		} else {
 			return readNumber();
 		}
@@ -148,6 +156,6 @@ public class ExprParser {
 
 	public static Expr parse(String input) {
 		ExprParser p = new ExprParser(Tokenizer.tokenize(input));
-		return p.readAddSubExpr();
+		return p.readOr();
 	}
 }
